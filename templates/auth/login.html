@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link rel="stylesheet" href="../static/css/login_page.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="login-container">
+        <h1>Login</h1>
+        <form method="post" action="{{ url_for('auth.login') }}">
+            <div class="input-field">
+                <input type="text" name="username" placeholder="Username" required>
+                <i class="ri-user-fill"></i>
+            </div>
+            <div class="input-field">
+                <input type="password" name="password" placeholder="Password" required>
+                <i class="ri-lock-2-fill"></i>
+            </div>
+            <div class="checkbox-container">
+                <label><input type="checkbox" name="remember"> Remember me</label>
+                <a href="#">Forgot password?</a>
+            </div>
+            <button class="login-btn" type="submit">Login</button>
+        </form>
+        <div class="register-link">
+            Don’t have an account? <a href="{{ url_for('auth.register') }}">Register</a>
+        </div>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="flash-messages">
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+</body>
+
+</html>

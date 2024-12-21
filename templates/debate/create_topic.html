@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Topic{% endblock %}
+
+{% block content %}
+
+<!-- CONTACT US -->
+<div class="diffSection" id="contactus_section">
+    <center>
+        <p style="font-size: 50px; padding: 100px">Create Topic</p>
+    </center>
+    <div class="csec"></div>
+
+
+
+    <div class="back-contact">
+        <div class="cc">
+            <form method="post" action="{{ url_for('debate.create_topic') }}">
+                <label>Topic Name <span class="imp">*</span></label><br>
+                <input type="text" name="topicName" style="width: 100%" required="required"><br>
+                <button type="submit" id="csubmit">Create Topic</button>
+                <!-- Display Flash Messages -->
+                {% if get_flashed_messages() %}
+                <div class="flash-messages">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                    {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+                    {% endwith %}
+                </div>
+                {% endif %}
+            </form>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

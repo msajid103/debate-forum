@@ -1,0 +1,4 @@
+*.log
+*.env
+webapp
+__pycashe__
