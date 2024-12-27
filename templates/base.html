@@ -8,47 +8,35 @@
 	<title>{% block title %}Flask App{% endblock %}</title>
 	<meta name="desciption" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" type="text/css" href="../static/css/style.css">
-	<script type="text/javascript" src="../static/js/script.js"></script>
-	<script src="https://code.jquery.com/jquery-3.2.1.js"></script>
-	<script>
-		$(window).on('scroll', function () {
-			if ($(window).scrollTop()) {
-				$('nav').addClass('black');
-			} else {
-				$('nav').removeClass('black');
-			}
-		})
-	</script>
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+	<!-- <link rel="stylesheet" type="text/css" href="../static/css/style.css"> -->
+
+
+
 	{% block head%}{% endblock %}
 </head>
 
 <body>
 	<!-- Navigation Bar -->
 	<header id="header">
-
 		<nav>
 			<div class="logo">
-				<h1>CodingNinja</h1>
+				<a style="text-decoration: none;" href="{{ url_for('index')}}"><h1>DebateSphere</h1></a>
+				
 			</div>
 			<ul>
 				<li><a class="active" href="{{ url_for('index')}}">Home</a></li>
 				<li><a href="{{ url_for('about')}}">About</a></li>
 				<li><a href="{{ url_for('contact')}}">Contact</a></li>
 
-				{% if session.get('user_id') %}					
-					<li><a class="sign_btn" href="{{ url_for('auth.logout') }}">Logout</a></li>
+				{% if session.get('user_id') %}
+				<li><a class="sign_btn" href="{{ url_for('auth.logout') }}">Logout</a></li>
 				{% else %}
-					<!-- Show Signin and Signup buttons when not logged in -->
-					<li><a class="sign_btn" href="{{ url_for('auth.login') }}">Signin</a></li>
-					<li><a class="sign_btn" href="{{ url_for('auth.register') }}">SignUp</a></li>
+				<!-- Show Signin and Signup buttons when not logged in -->
+				<li><a class="sign_btn" href="{{ url_for('auth.login') }}">Signin</a></li>
+				<li><a class="sign_btn" href="{{ url_for('auth.register') }}">SignUp</a></li>
 				{% endif %}
 			</ul>
-			<div class="menu-icon"  onclick=sideMenu(0)>
-				<div class="menu"></div>
-				<div class="menu"></div>
-				<div class="menu"></div>
-			</div>
 		</nav>
 		{% block header %}{% endblock %}
 
@@ -62,7 +50,7 @@
 	<footer>
 		<div class="footer-container">
 			<div class="left-col">
-				<h1 style="color: #fff; margin-bottom: 20px;">CodingNinja</h1>
+				<h1 style="color: #fff; margin-bottom: 20px;">DebateSphere</h1>
 				<div class="logo"></div>
 				<div class="social-media">
 					<a href="#"><img src="../static/assests/icon\fb.png"></a>

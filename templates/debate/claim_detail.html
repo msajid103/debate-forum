@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+{% block title %}Claim Details{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/debate/claim_detail.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="claim-detail-container" id="claimDetailContainer" data-claim-id="{{ claim[0] }}"
+    data-user-id="{{ session['user_id'] }}">
+    <h2 class="claim-text" id="claimText">Loading claim details...</h2>
+
+    <div class="reply-section">
+        <!-- Pro Replies -->
+        <div class="pro-replies">
+            <h3>Pro</h3>
+            <div id="proRepliesContainer">
+                <!-- Replies will be dynamically injected here -->
+            </div>
+        </div>
+
+        <!-- Con Replies -->
+        <div class="con-replies">
+            <h3>Con</h3>
+            <div id="conRepliesContainer">
+                <!-- Replies will be dynamically injected here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Reply Section -->
+    <!-- <div class="add-reply-container">
+        <textarea id="replyText" placeholder="Write your reply here..."></textarea>
+        <select id="replyType">
+            <option value="2">Pro</option>
+            <option value="3">Con</option>
+        </select>
+        <button id="addReplyBtn" class="btn-primary">Post Reply</button>
+    </div> -->
+
+    <!-- Add Reply Section -->
+    {% if session.get('user_id') %}
+    <div class="add-reply-container">
+        <textarea id="replyText" placeholder="Write your reply here..."></textarea>
+        <select id="replyType">
+            <option value="2">Pro</option>
+            <option value="3">Con</option>
+        </select>
+        <button id="addReplyBtn" class="btn-primary">Post Reply</button>
+    </div>
+    {% else %}
+    <div class="add-reply-container">
+        <p><a href="{{ url_for('auth.login') }}" style="text-decoration: underline; color: red;">Login</a> to
+            post a reply.</p>
+    </div>
+    {% endif %}
+
+
+
+
+</div>
+
+<script>
+    // Get `claimId` and `userId` from data attributes
+    const claimDetailContainer = document.getElementById('claimDetailContainer');
+    const claimId = claimDetailContainer.dataset.claimId;
+    const userId = claimDetailContainer.dataset.userId;
+    console.log(claimId, userId)
+    // Fetch claim details and replies
+    function fetchClaimDetails() {
+        fetch(`../claim/${claimId}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log('data------', data)
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    updateUI(data);
+                }
+            })
+            .catch(err => {
+                console.error('Error fetching claim details:', err);
+            });
+    }
+
+    function updateUI(data) {
+        // Populate claim details
+        document.getElementById('claimText').innerText = `${data.claim.text}`;
+
+        // Populate Pro Replies
+        const proRepliesContainer = document.getElementById('proRepliesContainer');
+        proRepliesContainer.innerHTML = '';
+        data.pro_replies.forEach(reply => {
+            proRepliesContainer.innerHTML += `
+            <div class="reply">
+                <p>${reply.text}</p>
+                <small>By ${reply.userName} on ${new Date(reply.creationTime).toLocaleString()}</small>
+            </div>
+            `;
+        });
+
+        // Populate Con Replies
+        const conRepliesContainer = document.getElementById('conRepliesContainer');
+        conRepliesContainer.innerHTML = '';
+        data.con_replies.forEach(reply => {
+            conRepliesContainer.innerHTML += `
+            <div class="reply">
+                <p>${reply.text}</p>
+                <small>By ${reply.userName} on ${new Date(reply.creationTime).toLocaleString()}</small>
+            </div>
+            `;
+        });
+    }
+
+    // Initial fetch to load claim details and replies
+    fetchClaimDetails();
+
+    // Add new reply
+    document.getElementById('addReplyBtn').addEventListener('click', () => {
+        const replyText = document.getElementById('replyText').value.trim();
+        const replyType = document.getElementById('replyType').value;
+
+        if (!replyText) {
+            alert('Reply text cannot be empty!');
+            return;
+        }
+
+        fetch('../reply', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                text: replyText,
+                claim_id: claimId,
+                user_id: userId,
+                reply_type: replyType
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    // alert(data.success);
+                    fetchClaimDetails(); // Refresh replies
+                }
+            })
+            .catch(err => {
+                console.error('Error adding reply:', err);
+                alert('An error occurred while adding your reply.');
+            });
+    });
+</script>
+{% endblock %}

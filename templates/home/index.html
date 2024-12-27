@@ -19,22 +19,6 @@
         <img src="../static/assests/extra/mainfram.png" alt="svg">
     </div>
 </div>
-<div class="side-menu" id="side-menu">
-    <div class="close" onclick="sideMenu(1)"><img src="../static/assests/icon/close.png" alt=""></div>
-    <div class="user">
-        <img src="../../static/assests/extra/e3.jpg" alt="Username">
-        <p>UserName</p>
-    </div>
-    <ul>
-        <li><a href="#about_section">About</a></li>
-        <li><a href="#portfolio_section">Achivements</a></li>
-        <li><a href="#team_section">Team</a></li>
-        <li><a href="#services_section">Services</a></li>
-        <li><a href="#contactus_section">Contact</a></li>
-        <li><a href="#feedBACK">Feedback</a></li>
-    </ul>
-</div>
-
 {% endblock %}
 
 {% block content %}
@@ -44,23 +28,57 @@
     <span>Explore Debates</span>
 </div>
 <br><br>
-<div class="course">
+<div class="topic-section">
     <center>
         <div class="cbox">
             {% for topic in topics %}
-                <div class="det"><a href="#">{{ topic[0] }}</a></div>
+                <div class="det">
+                    <!-- Link to the topic's claims page -->
+                    <a href="#">{{ topic[1] }}</a>
+                </div>
             {% endfor %}
-            {% if session.get('user_id') %}
-            <div class="det"><a href="{{ url_for('debate.create_topic') }}" style="font-size:x-large;color: white ;background: black; border: none;">+</a></div>
-            {% endif %}
-
+            
+           
+                <div class="det">
+                    {% if session.get('user_id') %}
+                    <a href="{{ url_for('debate.create_topic') }}" style="font-size:x-large;color: white; background: black; border: none;">+</a>
+                    {% else %}
+                    <a href="{{ url_for('auth.login') }}" style="font-size:x-large;color: white; background: black; border: none;">+</a>
+                    {% endif %}
+                </div>
+            
         </div>
     </center>
+    
 </div>
-
-
-
-
+<div class="claim-posts">
+    <div class="title">
+        <span>All claims</span>       
+            {% if session.get('user_id') %}
+            <a href="{{ url_for('debate.create_topic') }}" style="font-size:x-large;color: white; background: black; border-radius: 1rem; text-decoration: none; padding:.5rem 1rem;">Add Claim</a>
+            {% else %}
+            <a href="{{ url_for('auth.login') }}" style="font-size:x-large;color: white; background: black; border-radius: 1rem; text-decoration: none; padding:.5rem 1rem;">Add Claim</a>
+            {% endif %}     
+    </div>
+    <div class="cards-container">
+        {% for claim in claims%}
+        <a class="card" href="/debate/claim_detail/{{ claim[0] }}">
+            <div class="card-content">
+                <h3>#{{claim[3]}}</h3>
+                <h4>{{claim[1]}}</h4>
+                <div class="metadata">
+                    <span class="username"><span>by</span>{{claim[2]}}</span>
+                </div>
+                <div class="user-info">
+                    <span>24 comments</span>
+                    <span class="time">{{ claim[5] | format_datetime }}</span>
+                </div>
+            </div> 
+    </a>      
+        {% endfor %}
+        
+    </div>
+</div>
     <!-- FEEDBACK -->
     <div class="title2" id="feedBACK">
         <span>Give Feedback</span>

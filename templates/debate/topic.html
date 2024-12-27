@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ topic_name }}{% endblock %}
+
+{% block content %}
+<h1>{{ topic_name }}</h1>
+
+<!-- Display claims and their relationships -->
+<div class="claims">
+    {% for claim in claims %}
+        <div class="claim">
+            <p><strong>Claim:</strong> {{ claim[1] }}</p>
+            <p><strong>Posted by:</strong> User {{ claim[2] }}</p>
+            <p><strong>Created on:</strong> {{ claim[3] | date("YYYY-MM-DD") }}</p>
+            <p><strong>Last updated on:</strong> {{ claim[4] | date("YYYY-MM-DD") }}</p>
+            
+            <div class="relationships">
+                <p><strong>Relationships:</strong></p>
+                <ul>
+                    {% for related_claim_id, rel_type in claim_relationships[claim[0]] %}
+                        <li>Claim ID {{ related_claim_id }} is <strong>{{ rel_type }}</strong></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <hr>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,7 +1,8 @@
+from datetime import datetime
 from flask import Flask, render_template, session
 from routes.auth import auth
 from routes.debate import debate
-import sqlite3
+from controllers.debate import get_claims, get_topics
 
 app = Flask(__name__)
 app.secret_key = "your_secret_key"
@@ -10,18 +11,18 @@ app.secret_key = "your_secret_key"
 app.register_blueprint(auth, url_prefix='/auth')
 app.register_blueprint(debate, url_prefix='/debate')
 
+@app.template_filter('format_datetime')
+def format_datetime(value):
+    try:
+        return datetime.fromtimestamp(value).strftime('%Y-%m-%d %H:%M:%S')
+    except (ValueError, TypeError):
+        return value
+
 @app.route('/')
-def index():
-    # Fetch topics from the database
-    with sqlite3.connect("debate.sqlite") as db:
-        cursor = db.cursor()
-        cursor.execute("SELECT topicName FROM topic")
-        topics = cursor.fetchall()
-
-    # Check if the user is logged in
-    user_logged_in = 'user_id' in session
-
-    return render_template('home/index.html', topics=topics)
+def index(): 
+    topic_details = get_topics()
+    claims = get_claims()
+    return render_template('home/index.html', topics=topic_details, claims=claims)
 
 @app.route('/contact')
 def contact():

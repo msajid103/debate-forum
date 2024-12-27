@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Claim{% endblock %}
+
+{% block content %}
+
+<!-- CREATE CLAIM SECTION -->
+<div class="diffSection" id="create_claim_section">
+    <center>
+        <p style="font-size: 50px; padding: 100px">Create Claim</p>
+    </center>
+    <div class="csec"></div>
+
+    <div class="back-contact">
+        <div class="cc">
+            <!-- Claim Creation Form -->
+            <form method="post" action="{{ url_for('debate.create_claim') }}">
+                <!-- Topic Dropdown -->
+                <label for="topic_id">Select Topic <span class="imp">*</span></label><br>
+                <select name="topic_id" id="topic_id" required="required" style="width: 100%">
+                    <option value="" disabled selected>Select a topic</option>
+                    {% for topic in topics %}
+                        <option value="{{ topic[0] }}">{{ topic[1] }}</option>
+                    {% endfor %}
+                </select><br><br>
+
+                <!-- Claim Description -->
+                <label for="claim_text">Claim Description <span class="imp">*</span></label><br>
+                <textarea name="claim_text" id="claim_text" style="width: 100%" placeholder="Write your claim here..." required="required"></textarea><br><br>
+
+                <!-- Submit Button -->
+                <button type="submit" id="csubmit">Create Claim</button>
+
+                <!-- Display Flash Messages -->
+                {% if get_flashed_messages() %}
+                <div class="flash-messages">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                    {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+                    {% endwith %}
+                </div>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
